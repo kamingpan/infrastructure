@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.ConfigurationDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.Configuration">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="title" property="title" />
+        <result column="config_key" property="configKey" />
+        <result column="config_value" property="configValue" />
+        <result column="description" property="description" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="Configuration" type="com.kamingpan.infrastructure.entity.model.vo.ConfigurationVO">
+        <result column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="config_key" property="configKey" />
+        <result column="config_value" property="configValue" />
+        <result column="description" property="description" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        title, config_key, config_value, description
+    </sql>
+
+    <!-- 根据配置信息查询配置信息列表 -->
+    <select id="listByConfiguration" resultMap="Configuration">
+        select
+            c.id,
+            c.title,
+            c.config_key,
+            c.updater,
+            c.update_time
+        from
+            system_configuration c
+        where
+            c.deleted = #{deleted}
+            <if test="configuration != null">
+                <if test="configuration.title != null and configuration.title != ''">
+                    and c.title like #{configuration.title}
+                </if>
+                <if test="configuration.configKey != null and configuration.configKey != ''">
+                    and c.config_key like #{configuration.configKey}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据主键查询配置信息详情 -->
+    <select id="getConfigurationById" resultMap="Configuration">
+        select
+            c.id,
+            c.title,
+            c.config_key,
+            c.config_value,
+            c.description,
+            c.updater,
+            c.update_time
+        from
+            system_configuration c
+        where
+            c.id = #{id}
+            and c.deleted = #{deleted}
+    </select>
+
+    <!-- 根据配置键查询配置值 -->
+    <select id="getConfigValueByConfigKey" resultType="java.lang.String">
+        select
+            config_value
+        from
+            system_configuration
+        where
+            config_key = #{configKey}
+            and deleted = #{deleted}
+    </select>
+
+</mapper>

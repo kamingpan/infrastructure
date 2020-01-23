@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.UploadFileDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.UploadFile">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="key_word" property="keyWord" />
+        <result column="belong" property="belong" />
+        <result column="belong_id" property="belongId" />
+        <result column="belong_variable" property="belongVariable" />
+        <result column="filename" property="filename" />
+        <result column="type" property="type" />
+        <result column="content_type" property="contentType" />
+        <result column="size" property="size" />
+        <result column="url" property="url" />
+        <result column="the_group" property="theGroup" />
+        <result column="path" property="path" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="UploadFile" type="com.kamingpan.infrastructure.entity.model.vo.UploadFileVO">
+        <result column="id" property="id" />
+        <result column="name" property="filename" />
+        <result column="url" property="url" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        key_word, belong, belong_id, belong_variable, filename, type, content_type, size, url, grouping, path, remark
+    </sql>
+
+    <!-- 根据主键集合查询上传文件vo列表 -->
+    <select id="listByIds" resultMap="UploadFile">
+        select
+            id,
+            filename,
+            url
+        from
+            system_upload_file
+        where
+            deleted = #{deleted}
+            <if test="null != ids">
+                and id in <foreach item="item" index="index" collection="ids" open="(" close=")" separator=",">#{item}</foreach>
+            </if>
+    </select>
+
+    <!-- 根据主键查询上传文件vo -->
+    <select id="getById" resultMap="UploadFile">
+        select
+            id,
+            filename,
+            url
+        from
+            system_upload_file
+        where
+            id = #{id}
+            and deleted = #{deleted}
+    </select>
+
+</mapper>

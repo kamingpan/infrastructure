@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.ManagementInformationDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.ManagementInformation">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="name" property="name" />
+        <result column="logo" property="logo" />
+        <result column="logo_word" property="logoWord" />
+        <result column="type" property="type" />
+        <result column="route" property="route" />
+        <result column="version" property="version" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="ManagementInformationVO" type="com.kamingpan.infrastructure.entity.model.vo.ManagementInformationVO">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="logo" property="logo" />
+        <result column="version" property="version" />
+        <result column="remark" property="remark" />
+        <result column="logo_url" property="logoUrl" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        name, logo, logo_word, type, route, version, remark
+    </sql>
+
+    <!-- 根据主键查询管理端信息 -->
+    <select id="getManagementInformationById" resultMap="ManagementInformationVO">
+        select
+            mi.id,
+            mi.name,
+            mi.logo,
+            mi.version,
+            mi.remark,
+            uf.url logo_url
+        from
+            system_management_information mi
+            left join system_upload_file uf on mi.logo = uf.id
+        where
+            mi.id = #{id}
+    </select>
+
+</mapper>

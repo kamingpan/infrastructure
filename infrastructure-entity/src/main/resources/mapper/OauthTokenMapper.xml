@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.OauthTokenDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.OauthToken">
+        <result column="id" property="id" />
+        <result column="deleted" property="deleted" />
+        <result column="user_id" property="userId" />
+        <result column="client_id" property="clientId" />
+        <result column="access_token" property="accessToken" />
+        <result column="access_token_validity" property="accessTokenValidity" />
+        <result column="refresh_time" property="refreshTime" />
+        <result column="refresh_token" property="refreshToken" />
+        <result column="refresh_token_validity" property="refreshTokenValidity" />
+        <result column="login_time" property="loginTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        deleted,
+        user_id, client_id, access_token, access_token_validity, refresh_time, refresh_token, refresh_token_validity, login_time
+    </sql>
+
+    <!-- 根据用户主键和refreshToken删除对象 -->
+    <delete id="deleteByUserIdAndRefreshToken">
+        delete
+            from
+                system_oauth_token
+            where
+                user_id = #{userId}
+                and refresh_token = #{refreshToken}
+    </delete>
+
+    <!-- 根据用户主键和客户端id查询认证token对象 -->
+    <select id="getByUserId" resultMap="BaseResultMap">
+        select
+            <include refid="BaseColumnList"/>
+        from
+            system_oauth_token
+        where
+            user_id = #{userId}
+            and client_id = #{clientId}
+            and deleted = #{deleted}
+    </select>
+
+    <!-- 根据accessToken查询对象 -->
+    <select id="getByAccessToken" resultMap="BaseResultMap">
+        select
+            <include refid="BaseColumnList"/>
+        from
+            system_oauth_token
+        where
+            access_token = #{accessToken}
+            and deleted = #{deleted}
+    </select>
+
+    <!-- 根据refreshToken查询对象 -->
+    <select id="getByRefreshToken" resultMap="BaseResultMap">
+        select
+            <include refid="BaseColumnList"/>
+        from
+            system_oauth_token
+        where
+            refresh_token = #{refreshToken}
+            and deleted = #{deleted}
+    </select>
+
+</mapper>

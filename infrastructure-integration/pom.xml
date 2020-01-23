@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.kamingpan.infrastructure</groupId>
+        <artifactId>infrastructure</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.kamingpan.infrastructure</groupId>
+    <artifactId>infrastructure-integration</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>infrastructure-integration - 集成库</name>
+    <url>https://github.com/kamingpan/infrastructure/tree/master/infrastructure-integration</url>
+    <description>infrastructure integration.</description>
+
+    <properties>
+        <!-- Various frame version information -->
+
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+
+        <cache.version>2.6.11</cache.version>
+
+        <commons-fileupload.version>1.4</commons-fileupload.version>
+        <commons-io.version>2.6</commons-io.version>
+
+        <druid.version>1.1.12</druid.version>
+
+        <fastdfs-client.version>1.26.5</fastdfs-client.version>
+        <fastjson.version>1.2.62</fastjson.version>
+        <freemarker.version>2.3.29</freemarker.version>
+
+        <guava.version>28.2-jre</guava.version>
+
+        <javamelody.version>1.81.0</javamelody.version>
+        <jstl.version>1.2</jstl.version>
+        <junit.version>4.13</junit.version>
+        <jxls.version>2.4.6</jxls.version>
+        <jxls-poi.version>1.0.15</jxls-poi.version>
+        <jxls-jexcel.version>1.0.7</jxls-jexcel.version>
+
+        <mybatis.version>1.2.13</mybatis.version>
+        <mybatis-plus.version>3.3.1</mybatis-plus.version>
+        <mybatis.generator.version>1.4.0</mybatis.generator.version>
+        <mysql.version>8.0.19</mysql.version>
+
+        <oauth2.version>1.0.2</oauth2.version>
+
+        <pac4j.version>3.8.3</pac4j.version>
+        <pac4j-buji.version>4.1.1</pac4j-buji.version>
+
+        <quartz.version>2.3.2</quartz.version>
+
+        <!-- redis -->
+        <jedis.version>3.2.0</jedis.version>
+        <jedis-lock.version>1.0.0</jedis-lock.version>
+
+        <servlet.version>4.0.1</servlet.version>
+
+        <velocity.version>1.7</velocity.version>
+
+        <wechat-java.version>3.6.0</wechat-java.version>
+
+        <!-- environment setting -->
+        <!-- 编译级别 -->
+        <jdk.compiler.version>1.8</jdk.compiler.version>
+        <jdk.compiler.encoding>UTF-8</jdk.compiler.encoding>
+        <tomcat.server.version>2.2</tomcat.server.version>
+        <server.port>8080</server.port>
+        <tomcat.server>tomcat8</tomcat.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- aspectj aop start -->
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>-->
+            <!-- aspectj aop end -->
+
+
+            <!-- cache start -->
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>-->
+
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${cache.version}</version>
+            </dependency>
+            <!-- cache end -->
+
+
+            <!-- commons start -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <!-- commons end -->
+
+
+            <!-- druid start -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <!-- druid end -->
+
+
+            <!-- fastdfs start -->
+            <dependency>
+                <groupId>com.github.tobato</groupId>
+                <artifactId>fastdfs-client</artifactId>
+                <version>${fastdfs-client.version}</version>
+            </dependency>
+            <!-- fastdfs end -->
+
+
+            <!-- fast json start -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!-- fast json end -->
+
+
+            <!-- freemarker start -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <!-- freemarker end -->
+
+
+            <!-- guava start -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!-- guava end -->
+
+
+            <!-- jackson start -->
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-json</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>-->
+            <!-- jackson end -->
+
+
+            <!-- javamelody start -->
+            <dependency>
+                <groupId>net.bull.javamelody</groupId>
+                <artifactId>javamelody-spring-boot-starter</artifactId>
+                <version>${javamelody.version}</version>
+            </dependency>
+            <!-- javamelody end -->
+
+
+            <!-- jstl start -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${jstl.version}</version>
+            </dependency>
+            <!-- jstl end -->
+
+
+            <!-- junit start -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- junit end -->
+
+
+            <!-- jxls start -->
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls</artifactId>
+                <version>${jxls.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls-poi</artifactId>
+                <version>${jxls-poi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls-jexcel</artifactId>
+                <version>${jxls-jexcel.version}</version>
+            </dependency>
+            <!-- jxls start -->
+
+
+            <!-- lombok start -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <!-- lombok end -->
+
+
+            <!-- log start -->
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>-->
+            <!-- log end -->
+
+
+            <!-- mybatis start -->
+            <!--<dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>1.3.2</version>
+            </dependency>-->
+
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis.generator.version}</version>
+            </dependency>
+            <!-- mybatis end -->
+
+
+            <!-- mybatis plus start -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!-- mybatis plus end -->
+
+
+            <!-- mysql start -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <!-- mysql end -->
+
+
+            <!-- oauth2 start -->
+            <dependency>
+                <groupId>org.apache.oltu.oauth2</groupId>
+                <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+                <version>${oauth2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.oltu.oauth2</groupId>
+                <artifactId>org.apache.oltu.oauth2.common</artifactId>
+                <version>${oauth2.version}</version>
+            </dependency>
+            <!-- oauth2 end -->
+
+
+            <!-- pac4j start -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-core</artifactId>
+                <version>${pac4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-cas</artifactId>
+                <version>${pac4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.buji</groupId>
+                <artifactId>buji-pac4j</artifactId>
+                <version>${pac4j-buji.version}</version>
+            </dependency>
+            <!-- pac4j end -->
+
+
+            <!-- quartz start -->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+            <!-- quartz end -->
+
+
+            <!-- redis start -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.jedis-lock</groupId>
+                <artifactId>jedis-lock</artifactId>
+                <version>${jedis-lock.version}</version>
+            </dependency>
+
+            <!--<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>-->
+            <!-- redis end -->
+
+
+            <!-- servlet start -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.version}</version>
+            </dependency>
+            <!-- servlet end -->
+
+
+            <!-- spring start -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring-boot.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <!-- spring start -->
+
+
+            <!-- velocity start -->
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>${velocity.version}</version>
+            </dependency>
+            <!-- velocity end -->
+
+
+            <!-- tomcat start -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- tomcat end -->
+
+
+            <!-- WeChat start -->
+            <!-- parent -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-parent</artifactId>
+                <version>${wechat-java.version}</version>
+            </dependency>
+
+            <!-- 公共 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-common</artifactId>
+                <version>${wechat-java.version}</version>
+            </dependency>
+
+            <!-- cp -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-cp</artifactId>
+                <version>${wechat-java.version}</version>
+            </dependency>
+
+            <!-- 公众号 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-mp</artifactId>
+                <version>${wechat-java.version}</version>
+            </dependency>
+
+            <!-- 小程序 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-miniapp</artifactId>
+                <version>${wechat-java.version}</version>
+            </dependency>
+            <!-- WeChat end -->
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <finalName>infrastructure-integration</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--includes>
+                    <include>**/*.sql</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes-->
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <!--<excludes>
+                    <exclude>WEB-INF/web.xml</exclude>
+                    <exclude>WEB-INF/spring-mvc-servlet.xml</exclude>
+                </excludes>-->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- 清除级别配置 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
+            <!-- 编译级别配置 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <!-- 部署级别配置 -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>-->
+
+            <!-- GPG加密插件 -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>-->
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- spring boot 打包运行文件插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+
+                <!-- tomcat部署插件 -->
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>${tomcat.server.version}</version>
+                    <configuration>
+                        <port>${server.port}</port>
+                        <uriEncoding>${project.build.sourceEncoding}</uriEncoding>
+                        <server>${tomcat.server}</server>
+
+                        <!--<url>http://http://localhost:8080/infrastructure</url>
+                        <username>username</username>
+                        <password>password</password>
+                        <path>/</path>-->
+                    </configuration>
+                </plugin>
+
+                <!-- mybatis生成实体源码插件 -->
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>${mybatis.generator.version}</version>
+                    <configuration>
+                        <verbose>true</verbose>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                </plugin>
+            </plugins>
+
+        </pluginManagement>
+    </build>
+</project>

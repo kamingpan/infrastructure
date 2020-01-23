@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration scan="true" scanPeriod="60 seconds">
+    <!-- 用来设置上下文名称，每个logger都关联到logger上下文，默认上下文名称为default。但可以使用<contextName>设置成其他名字，用于区分不同应用程序的记录。一旦设置，不能修改。 -->
+    <contextName>infrastructure-mini-program</contextName>
+
+    <!-- 定义日志文件的存储地址 勿在 logback 的配置中使用相对路径。 -->
+    <springProperty scope="context" name="LOGGING_PATH" source="logging.path" defaultValue="/usr/local/logs" />
+
+    <!-- 日志输出到控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- <encoder>：对记录事件进行格式化。负责两件事，一是把日志信息转换成字节数组，二是把字节数组写入到输出流。 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!-- 采用replace实现了比较美观的超链接日志，控制台输出可以采用这种格式方便调试，生产环境不建议打印堆栈信息，比较影响性能。 -->
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level -%X{traceId} %replace(%caller{1}){'\t|caller.{1}0|\n', ''} - %msg%n</pattern>-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level -%X{traceId} %logger.%method:%L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 每天生成一个日志文件，保存90天的日志文件。 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOGGING_PATH}/infrastructure/infrastructure-mini-program/infrastructure-mini-program.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGGING_PATH}/infrastructure/infrastructure-mini-program/%d{yyyy-MM-dd}/infrastructure-mini-program.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>300MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>300MB</maxFileSize>
+        </triggeringPolicy>-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level -%X{traceId} %logger.%method:%L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 异常日志 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤只打印 WARN 以上级别日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <file>${LOGGING_PATH}/infrastructure/infrastructure-mini-program/error/infrastructure-mini-program-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <minIndex>1</minIndex>
+            <maxIndex>12</maxIndex>
+            <fileNamePattern>${LOGGING_PATH}/infrastructure/infrastructure-mini-program/error/infrastructure-mini-program-error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>300MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level -%X{traceId} %logger.%method:%L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 各式框架日志打印级别 -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.mybatis.spring" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+
+    <!-- redis相关日志不打印 -->
+    <logger name="io.lettuce.core" level="WARN" />
+
+    <!-- mybatis sql 输出定制日志，设置dao包为debug -->
+    <logger name="com.kamingpan.infrastructure.entity.dao" level="DEBUG" />
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </root>
+</configuration>

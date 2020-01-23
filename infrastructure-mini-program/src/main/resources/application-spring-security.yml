@@ -1,0 +1,17 @@
+spring:
+  security:
+    # 登录页面
+    login-page: /system/to-login
+    # 登录逻辑处理路径
+    login-url: /system/login
+
+    # 登录会话超时时间（单位：分钟）
+    session-timeout: 120
+
+    # 是否验证ip
+    validate-ip: true
+
+    # 允许匿名（未登录）请求路径
+    anonymous-url:
+      - /system/to-login
+      - /upload-file/download/**

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.PermissionDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.Permission">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="name" property="name" />
+        <result column="module_id" property="moduleId" />
+        <result column="superior" property="superior" />
+        <result column="icon" property="icon" />
+        <result column="authentication" property="authentication" />
+        <result column="sort" property="sort" />
+        <result column="method" property="method" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <resultMap id="Permission" type="com.kamingpan.infrastructure.entity.model.vo.PermissionVO">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="module_id" property="moduleId" />
+        <result column="module_name" property="moduleName" />
+        <result column="module_icon" property="moduleIcon" />
+        <result column="superior" property="superior" />
+        <result column="superior_name" property="superiorName" />
+        <result column="superior_icon" property="superiorIcon" />
+        <result column="icon" property="icon" />
+        <result column="authentication" property="authentication" />
+        <result column="sort" property="sort" />
+        <result column="method" property="method" />
+        <result column="remark" property="remark" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <resultMap id="PermissionList" type="com.kamingpan.infrastructure.entity.model.vo.PermissionListVO">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="module_id" property="moduleId" />
+        <result column="superior" property="superior" />
+        <result column="icon" property="icon" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        name, module_id, superior, icon, authentication, sort, method, status, remark
+    </sql>
+
+    <!-- 查询超级管理员权限字符串 -->
+    <select id="listAuthenticationBySuperAdmin" resultType="java.lang.String">
+        select
+            authentication
+        from
+            system_permission
+        where
+            deleted = #{deleted}
+        order by
+            sort
+    </select>
+
+    <!-- 根据管理员主键查询管理员权限 -->
+    <select id="listByAdminId" resultMap="BaseResultMap">
+        <if test="adminId != null">
+            select
+                <include refid="BaseColumnList"/>
+            from
+                system_permission
+            where
+                id in (
+                    select permission from system_role_permission where role_id in (
+                        select role_id from system_admin_role where admin_id = #{adminId}
+                )
+            )
+            order by
+                sort
+        </if>
+    </select>
+
+    <!-- 根据管理员主键查询管理员权限字符串 -->
+    <select id="listAuthenticationByAdminId" resultType="java.lang.String">
+        <if test="adminId != null">
+            select
+                authentication
+            from
+                system_permission
+            where
+                id in (
+                    select permission_id from system_role_permission where role_id in (
+                        select role_id from system_admin_role where admin_id = #{adminId}
+                    )
+                )
+                and deleted = #{deleted}
+            order by
+                sort
+        </if>
+    </select>
+
+    <!-- 查询权限信息 -->
+    <select id="listPermission" resultMap="PermissionList">
+        select
+            id,
+            name,
+            module_id,
+            superior,
+            icon
+        from
+            system_permission
+        where
+            deleted = #{deleted}
+        order by
+            module_id, sort
+    </select>
+
+    <!-- 根据主键查询权限信息 -->
+    <select id="getPermissionById" resultMap="Permission">
+        select
+            p.id,
+            p.name,
+            p.module_id,
+            m.name module_name,
+            m.icon module_icon,
+            p.superior,
+            s.name superior_name,
+            s.icon superior_icon,
+            p.icon,
+            p.authentication,
+            p.sort,
+            p.method,
+            p.remark,
+            p.updater,
+            p.update_time
+        from
+            system_permission p
+            left join system_module m on m.id = p.module_id
+            left join system_permission s on s.id = p.superior
+        where
+            p.id = #{id}
+            and p.deleted = #{deleted}
+    </select>
+
+    <!-- 根据所属模块查询所有上级权限（排除当前权限） -->
+    <select id="listSuperiorByModuleId" resultMap="Permission">
+        select
+            id,
+            name
+        from
+            system_permission
+        <where>
+            <if test="moduleId != null and moduleId != ''">
+                module_id = #{moduleId}
+            </if>
+            <if test="id != null and id != ''">
+                and id != #{id}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询可用权限 -->
+    <select id="listMapByModuleStatus" resultMap="PermissionList">
+        select
+            p.id,
+            p.name,
+            p.icon,
+            p.superior,
+            p.module_id
+        from
+            system_permission p,
+            system_module m
+        where
+            p.module_id = m.id
+            and m.status = #{status}
+        order by
+            p.superior,
+            p.sort
+    </select>
+
+    <!-- 查询角色已关联的权限主键 -->
+    <select id="listIdByRoleId" resultType="java.lang.String">
+        select
+            permission_id
+        from
+            system_role_permission
+        where
+            role_id = #{roleId}
+    </select>
+
+</mapper>

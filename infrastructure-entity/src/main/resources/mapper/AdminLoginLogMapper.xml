@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.AdminLoginLogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.AdminLoginLog">
+        <result column="id" property="id" />
+        <result column="admin_id" property="adminId" />
+        <result column="login_time" property="loginTime" />
+        <result column="status" property="status" />
+        <result column="result" property="result" />
+        <result column="ip" property="ip" />
+        <result column="address" property="address" />
+        <result column="mac" property="mac" />
+        <result column="device" property="device" />
+        <result column="browser" property="browser" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="AdminLoginLog" type="com.kamingpan.infrastructure.entity.model.vo.AdminLoginLogVO">
+        <result column="id" property="id" />
+        <result column="admin_id" property="adminId" />
+        <result column="username" property="username" />
+        <result column="full_name" property="fullName" />
+        <result column="portrait" property="portrait" />
+        <result column="login_time" property="loginTime" />
+        <result column="status" property="status" />
+        <result column="status_label" property="statusLabel" />
+        <result column="result" property="result" />
+        <result column="ip" property="ip" />
+        <result column="address" property="address" />
+        <result column="mac" property="mac" />
+        <result column="device" property="device" />
+        <result column="browser" property="browser" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        admin_id, login_time, status, result, ip, address, mac, device, browser
+    </sql>
+
+    <!-- 根据条件查询管理员登录日志信息 -->
+    <select id="listByAdminLoginLog" resultMap="AdminLoginLog">
+        select
+            al.id,
+            a.username,
+            a.full_name,
+            uf.url portrait,
+            al.login_time,
+            al.result,
+            al.ip,
+            al.address,
+            al.device,
+            al.browser,
+            al.status
+        from
+            system_admin_login_log al
+            left join system_admin a on al.admin_id = a.id
+            left join system_upload_file uf on a.portrait = uf.id
+            <if test="adminLoginLog != null">
+                where
+                1 = 1
+                <if test="adminLoginLog.username != null and adminLoginLog.username != ''">
+                    and a.username like #{adminLoginLog.username}
+                </if>
+                <if test="adminLoginLog.fullName != null and adminLoginLog.fullName != ''">
+                    and a.full_name like #{adminLoginLog.fullName}
+                </if>
+                <if test="adminLoginLog.status != null">
+                    and al.status = #{adminLoginLog.status}
+                </if>
+                <if test="adminLoginLog.beginTime != null">
+                    and al.login_time >= #{adminLoginLog.beginTime}
+                </if>
+                <if test="adminLoginLog.endTime != null">
+                    and al.login_time &lt;= #{adminLoginLog.endTime}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据主键查询管理员登录日志信息 -->
+    <select id="getAdminLoginLogById" resultMap="AdminLoginLog">
+        select
+            al.id,
+            a.username,
+            a.full_name,
+            al.login_time,
+            al.result,
+            al.ip,
+            al.address,
+            al.mac,
+            al.device,
+            al.browser,
+            al.status
+        from
+            system_admin_login_log al
+            left join system_admin a on a.id = al.admin_id
+        where
+            al.id = #{id}
+    </select>
+
+    <!-- 查询最后一个月登录成功的时间 -->
+    <select id="listLastMonth" resultType="java.util.Date">
+        select
+            login_time
+        from
+            system_admin_login_log
+        where
+            status = #{status}
+            and login_time between #{lastMonth} and #{lastDay}
+        order by
+          login_time
+    </select>
+
+</mapper>

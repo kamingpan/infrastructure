@@ -1,0 +1,33 @@
+spring:
+  security:
+    # 登录页面
+    login-page: /system/to-login
+    # 登录逻辑处理路径
+    login-url: /system/login
+
+    # 登录会话超时时间（单位：分钟）
+    session-timeout: 60
+    # 最大会话个数
+    max-login-session: 1
+    # 最大登录错误次数
+    max-login-error: 5
+    # 登录错误次数缓存时长（单位：分钟）
+    login-error-timeout: 1440
+
+    # 是否验证ip
+    validate-ip: true
+
+    # 允许匿名（未登录）请求路径
+    anonymous-url:
+      # 静态资源
+      - /image/**
+
+      # druid视图
+      - /druid/**
+      - /monitoring
+
+      - /system/to-login
+      - /system/information
+      - /system/logo
+      - /system/username-exist
+      - /upload-file/download/**

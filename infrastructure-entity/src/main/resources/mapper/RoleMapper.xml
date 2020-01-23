@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.RoleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.Role">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="name" property="name" />
+        <result column="superior" property="superior" />
+        <result column="level" property="level" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="Role" type="com.kamingpan.infrastructure.entity.model.vo.RoleVO">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="superior" property="superior" />
+        <result column="superior_name" property="superiorName" />
+        <result column="level" property="level" />
+        <result column="status" property="status" />
+        <result column="status_label" property="statusLabel" />
+        <result column="remark" property="remark" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="RoleList" type="com.kamingpan.infrastructure.entity.model.vo.RoleListVO">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="superior" property="superior" />
+        <result column="icon" property="icon" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        name, superior, level, status, remark
+    </sql>
+
+    <!-- 根据角色查询角色信息 -->
+    <select id="listByRole" resultMap="Role">
+        select
+            r.id,
+            r.name,
+            r.superior,
+            rr.name superior_name,
+            r.level,
+            r.status,
+            r.updater,
+            r.update_time
+        from
+            system_role r
+            left join system_role rr on r.superior = rr.id
+        <where>
+            r.deleted = #{deleted}
+            <if test="role != null">
+                <if test="role.name != null and role.name != ''">
+                    and r.name like #{role.name}
+                </if>
+                <if test="role.status != null">
+                    and r.status = #{role.status}
+                </if>
+                <if test="role.level != null">
+                    and r.level = #{role.level}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据角色主键查询角色信息 -->
+    <select id="getRoleById" resultMap="Role">
+        select
+            r.id,
+            r.name,
+            r.superior,
+            rr.name superior_name,
+            r.level,
+            r.status,
+            r.remark,
+            r.updater,
+            r.update_time
+        from
+            system_role r
+            left join system_role rr on r.superior = rr.id
+        where
+            r.id = #{id}
+            and r.deleted = #{deleted}
+    </select>
+
+    <!-- 根据状态查询角色 -->
+    <select id="listByStatus" resultMap="RoleList">
+        select
+            r.id,
+            r.name,
+            r.superior,
+            m.icon
+        from
+            system_role r,
+            system_module m
+        where
+            m.id = '03'
+            and r.status = #{status}
+            and r.deleted = #{deleted}
+    </select>
+
+    <!-- 查询管理员已关联的角色主键 -->
+    <select id="listIdByAdminId" resultType="java.lang.String">
+        select
+            role_id
+        from
+            system_admin_role
+        where
+            admin_id = #{adminId}
+    </select>
+
+    <!-- 查询所有上级角色（排除当前角色） -->
+    <select id="listSuperior" resultMap="Role">
+        select
+            id,
+            name
+        from
+            system_role
+        where
+            status = 0
+            and deleted = 0
+            <if test="id != null and id != ''">
+                and id != #{id}
+            </if>
+    </select>
+
+</mapper>

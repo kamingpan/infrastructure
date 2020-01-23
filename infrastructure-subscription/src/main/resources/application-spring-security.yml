@@ -1,0 +1,30 @@
+spring:
+  security:
+    # 登录页面
+    login-page: /system/to-login
+    # 登录逻辑处理路径
+    login-url: /system/login
+
+    # 登录成功跳转地址（因为目前是前后端分离，所以配置的url地址建议是前端页面地址）
+    login-success-url: /html/index.html
+    # 登录失败跳转路径（因为目前是前后端分离，所以配置的url地址建议是前端页面地址）
+    login-failure-url: /html/error-500.html
+
+    # 登录会话超时时间（单位：分钟）
+    session-timeout: 120
+
+    # 是否验证ip
+    validate-ip: true
+
+    # 允许匿名（未登录）请求路径
+    anonymous-url:
+      - /system/to-login
+      - /upload-file/download/**
+
+      # 微信服务器统一推送入口
+      - /service-root
+      - /MP_verify_*.txt
+
+      # 静态资源允许直接访问
+      - /html/**
+      - /image/**

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.AdminDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.Admin">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="status" property="status" />
+        <result column="full_name" property="fullName" />
+        <result column="phone" property="phone" />
+        <result column="superior" property="superior" />
+        <result column="portrait" property="portrait" />
+        <result column="gender" property="gender" />
+        <result column="email" property="email" />
+        <result column="restrict_ip" property="restrictIp" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="Admin" type="com.kamingpan.infrastructure.entity.model.vo.AdminVO">
+        <result column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="status" property="status" />
+        <result column="status_label" property="statusLabel" />
+        <result column="full_name" property="fullName" />
+        <result column="phone" property="phone" />
+        <result column="portrait" property="portrait" />
+        <result column="gender" property="gender" />
+        <result column="gender_label" property="genderLabel"/>
+        <result column="email" property="email" />
+        <result column="restrict_ip" property="restrictIp" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="portrait_url" property="portraitUrl" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        username, password, status, full_name, phone, superior, portrait, gender, email, restrict_ip
+    </sql>
+
+    <!-- 根据管理员查询管理员信息 -->
+    <select id="listByAdmin" resultMap="Admin">
+        select
+            a.id,
+            a.username,
+            a.status,
+            a.full_name,
+            uf.url portrait,
+            a.phone,
+            a.updater,
+            a.update_time
+        from
+            system_admin a
+            left join system_upload_file uf on uf.id = a.portrait
+        where
+            a.deleted = #{deleted}
+            <if test="admin != null">
+                <if test="admin.username != null and admin.username != ''">
+                    and a.username like #{admin.username}
+                </if>
+                <if test="admin.status != null">
+                    and a.status = #{admin.status}
+                </if>
+                <if test="admin.fullName != null and admin.fullName != ''">
+                    and a.full_name like #{admin.fullName}
+                </if>
+                <if test="admin.phone != null and admin.phone != ''">
+                    and a.phone like #{admin.phone}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据管理员用户名查询管理员 -->
+    <select id="getByUsername" resultMap="BaseResultMap">
+        <if test="username != null">
+            select
+                <include refid="BaseColumnList"/>
+            from
+                system_admin
+            where
+                username = #{username}
+                and deleted = #{deleted}
+        </if>
+    </select>
+
+    <!-- 根据主键查询管理员详情 -->
+    <select id="getAdminById" resultMap="Admin">
+        select
+            a.id,
+            a.username,
+            a.status,
+            a.full_name,
+            a.gender,
+            a.phone,
+            a.email,
+            a.portrait,
+            uf.url portrait_url,
+            a.restrict_ip,
+            a.updater,
+            a.update_time
+        from
+            system_admin a
+            left join system_upload_file uf on uf.id = a.portrait
+        where
+            a.id = #{id}
+            and a.deleted = #{deleted}
+    </select>
+
+    <!-- 根据管理员用户名查询管理员数量 -->
+    <select id="countByUsername" resultType="java.lang.Integer">
+        select count(id) from system_admin where username = #{username}
+    </select>
+
+</mapper>

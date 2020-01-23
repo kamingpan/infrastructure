@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.MiniProgramUserDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.MiniProgramUser">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="user_id" property="userId" />
+        <result column="nickname" property="nickname" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="portrait" property="portrait" />
+        <result column="gender" property="gender" />
+        <result column="country" property="country" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="language" property="language" />
+        <result column="openid" property="openid" />
+        <result column="union_id" property="unionId" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="MiniProgramUser" type="com.kamingpan.infrastructure.entity.model.vo.MiniProgramUserVO">
+        <result column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="registered_user_id" property="registeredUserId" />
+        <result column="status" property="status" />
+        <result column="status_label" property="statusLabel" />
+        <result column="nickname" property="nickname" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="portrait" property="portrait" />
+        <result column="gender" property="gender" />
+        <result column="gender_label" property="genderLabel" />
+        <result column="country" property="country" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="openid" property="openid" />
+        <result column="union_id" property="unionId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        user_id, nickname, email, mobile, portrait, gender, country, province, city, language, openid, union_id
+    </sql>
+
+    <!-- 根据主键解除手机号码绑定 -->
+    <update id="unbindByMobile">
+        update system_mini_program_user set mobile = null where id = #{id}
+    </update>
+
+    <!-- 根据小程序用户查询小程序用户信息 -->
+    <select id="listByMiniProgramUser" resultMap="MiniProgramUser">
+        select
+            mpu.id,
+            mpu.user_id,
+            u.status,
+            mpu.nickname,
+            mpu.portrait,
+            mpu.gender,
+            mpu.openid
+        from
+            system_mini_program_user mpu
+            left join system_user u on u.id = mpu.user_id
+        where
+            mpu.deleted = #{deleted}
+            <if test="miniProgramUser != null">
+                <if test="miniProgramUser.nickname != null and miniProgramUser.nickname != ''">
+                    and mpu.nickname like #{miniProgramUser.nickname}
+                </if>
+                <if test="miniProgramUser.status != null">
+                    and u.status = #{miniProgramUser.status}
+                </if>
+                <if test="miniProgramUser.openid != null and miniProgramUser.openid != ''">
+                    and mpu.openid like #{miniProgramUser.openid}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据手机号查询小程序用户 -->
+    <select id="getByMobile" resultMap="BaseResultMap">
+        select
+            <include refid="BaseColumnList"></include>
+        from
+            system_mini_program_user
+        where
+            mobile = #{mobile}
+            and deleted = #{deleted}
+            limit 1
+    </select>
+
+    <!-- 根据主键查询小程序用户详情 -->
+    <select id="getMiniProgramUserById" resultMap="MiniProgramUser">
+        select
+            mpu.id,
+            mpu.user_id,
+            ru.id registered_user_id,
+            u.status,
+            mpu.nickname,
+            mpu.email,
+            mpu.mobile,
+            mpu.portrait,
+            mpu.gender,
+            mpu.country,
+            mpu.province,
+            mpu.city,
+            mpu.openid,
+            mpu.union_id
+        from
+            system_mini_program_user mpu
+            left join system_user u on u.id = mpu.user_id
+            left join system_registered_user ru on ru.user_id = mpu.user_id
+        where
+            mpu.id = #{id}
+            and mpu.deleted = #{deleted}
+    </select>
+
+    <!-- 根据openid查询用户主键 -->
+    <select id="getUserIdByOpenid" resultType="java.lang.String">
+        <if test="openid != null and openid != ''">
+            select user_id from system_mini_program_user where openid = #{openid}
+        </if>
+    </select>
+
+    <!-- 根据用户主键查询openid -->
+    <select id="getOpenidByUserId" resultType="java.lang.String">
+        <if test="userId != null and userId != ''">
+            select openid from system_mini_program_user where user_id = #{userId}
+        </if>
+    </select>
+
+
+</mapper>

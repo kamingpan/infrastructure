@@ -1,0 +1,103 @@
+### 服务配置 ###
+server:
+  port: 8020
+  servlet:
+    context-path: /subscription
+    session:
+      timeout: 1800
+
+### spring配置 ###
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  profiles:
+    # 使用配置文件
+    # active: dev
+    # 引用其他的yml文件
+    include: datasource, redis, spring-security, subscription
+  mvc:
+    # 表示所有的访问都经过静态资源路径
+    static-path-pattern: /**
+  resources:
+    # 静态资源匹配目录
+    static-locations: classpath:/static/
+
+  # 数据源配置
+  datasource:
+    # 主数据源配置
+    primary:
+      # 数据库配置
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/infrastructure?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+      username: username
+      password: password
+
+  # 缓存配置
+  cache:
+    ehcache:
+      # 缓存文件目录
+      config: classpath:cache/ehcache.xml
+
+# 日志输出配置
+logging:
+  path: /usr/local/logs
+
+### mybatis plus配置 ###
+mybatis-plus:
+  # 加载全局的配置文件
+  # config-location: classpath:mybatis/mybatis-config.xml
+  # 实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.kamingpan.infrastructure.entity.entity
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  # 指定 MyBatis 的执行器，MyBatis 的执行器总共有三种：
+  # ExecutorType.SIMPLE：该执行器类型不做特殊的事情，为每个语句的执行创建一个新的预处理语句（PreparedStatement）
+  # ExecutorType.REUSE：该执行器类型会复用预处理语句（PreparedStatement）
+  # ExecutorType.BATCH：该执行器类型会批量执行所有的更新语句
+  executor-type: simple
+  configuration:
+    # 全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存，默认为 true
+    cacheEnabled: true
+  global-config:
+    # DB 策略配置
+    db-config:
+      # 是否开启大写命名，默认不开启。
+      capital-mode: false
+      # 主键类型 0："数据库ID自增"，1："该类型为未设置主键类型"，2："用户输入ID"，3："全局唯一ID"，4："全局唯一ID (UUID)"，5："字符串全局唯一ID (idWorker 的字符串表示)"
+      id-type: input
+      # 逻辑删除配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+### 系统配置 ###
+system:
+  # 是否初始化默认数据库脚本
+  init-default-sql: false
+  # 是否初始化自定义数据库脚本
+  init-custom-sql: false
+  # 自定义数据库脚本路径(多脚本用,间隔)
+  custom-sql-path: sql/sql-init.sql
+
+  # 是否允许跨域
+  cross-domain-allowed: false
+  # 是否重定向到https（tomcat内置重定向）
+  redirect-to-https: false
+  # 接口超时警告（默认：5000，单位：毫秒）
+  timeout-warning: 5000
+  # 管理员初始化密码
+  admin-init-password: 123456
+  # 上传文件存储方式（local：本地存储，fast_dfs：FastDFS服务器存储，后续可能持续增加）
+  upload-file-storage-type: local
+  # 上传文件存储目录
+  upload-file-directory: /usr/local/upload/infrastructure/infrastructure-subscription
+  # 上传文件请求目录
+  upload-file-url: /subscription/upload-file/download/:id
+
+  # id生成配置
+  # 当有多个web服务器时，worker-id应该设置为不同
+  worker-id: 2
+  # 数据中心id
+  data-center-id: 0

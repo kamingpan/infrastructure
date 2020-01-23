@@ -1,0 +1,11 @@
+fdfs:
+  # 读取时间
+  so-timeout: 1500
+  # 连接超时时间
+  connect-timeout: 600
+  # tracker服务配置地址列表
+  tracker-list: 127.0.0.1:22122
+  # 连接池配置
+  pool:
+    # 避免和Springboot框架自身注册的commons-pool2连接池重名，因此设置为false
+    jmx-enabled: false

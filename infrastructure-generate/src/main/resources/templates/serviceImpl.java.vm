@@ -1,0 +1,28 @@
+package ${package.ServiceImpl};
+
+import ${superServiceImplClassPackage};
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * $!{table.comment} 服务实现类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+@Service
+@Transactional(readOnly = true)
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${entity}, ${table.mapperName}>(), ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}, ${table.mapperName}> implements ${table.serviceName} {
+
+}
+#end

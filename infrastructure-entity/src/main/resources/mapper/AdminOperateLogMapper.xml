@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.AdminOperateLogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.AdminOperateLog">
+        <result column="id" property="id" />
+        <result column="belong" property="belong" />
+        <result column="belong_id" property="belongId" />
+        <result column="type" property="type" />
+        <result column="target" property="target" />
+        <result column="ip" property="ip" />
+        <result column="url" property="url" />
+        <result column="parameter" property="parameter" />
+        <result column="method" property="method" />
+        <result column="content" property="content" />
+        <result column="remark" property="remark" />
+        <result column="operator_id" property="operatorId" />
+        <result column="operator" property="operator" />
+        <result column="operator_portrait" property="operatorPortrait" />
+        <result column="operate_time" property="operateTime" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="adminOperateLog" type="com.kamingpan.infrastructure.entity.model.vo.AdminOperateLogVO">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="remark" column="remark"/>
+        <result property="operator" column="operator"/>
+        <result property="operateTime" column="operate_time"/>
+        <result property="portrait" column="portrait"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        belong, belong_id, type, target, ip, url, parameter, method, content, remark, operator_id, operator, operator_portrait, operate_time
+    </sql>
+
+    <select id="listAdminOperateLogByBelong" resultMap="adminOperateLog">
+        select
+            aol.id,
+            aol.type,
+            aol.content,
+            aol.operate_time,
+            aol.operator,
+            uf.url portrait
+        from
+            system_admin_operate_log aol
+            left join system_upload_file uf on aol.operator_portrait = uf.id
+        where
+            aol.belong = #{belong}
+            and aol.belong_id = #{belongId}
+        order by aol.operate_time
+        <if test="orderType != null and orderType != ''">
+            ${orderType}
+        </if>
+    </select>
+
+</mapper>

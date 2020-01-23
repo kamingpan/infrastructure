@@ -1,0 +1,47 @@
+spring:
+  # 数据源配置
+  datasource:
+    # 主数据源配置
+    primary:
+      # 连接池配置
+      type: com.alibaba.druid.pool.DruidDataSource
+      # 初始化大小
+      initial-size: 10
+      # 最小空闲数
+      min-idle: 10
+      # 最大活动数
+      max-active: 50
+      # 连接等待超时时间
+      max-wait: 60000
+      # 隔多久进行一次检测(检测可以关闭的空闲连接)
+      time-between-eviction-runs-millis: 60000
+      # 连接在池中的最小生存时间
+      min-evictable-idle-time-millis: 300000
+      # 验证查询
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 是否打开PSCache
+      pool-prepared-statements: true
+      # 每个连接上PSCache的大小
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall #,log4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # druid监控视图配置
+      # 视图请求路径
+      druid-url: /druid/*
+      # 允许访问ip（多个ip用逗号间隔）
+      # allow-ip: 127.0.0.1
+      # 拒绝访问ip (与allow存在共同时，deny优先于allow）
+      # deny-ip: 127.0.0.1
+      # 视图登录用户名
+      login-username: admin
+      # 视图登录密码
+      login-password: admin
+      # 是否能够重置数据
+      reset-enable: true
+      # druid切面拦截器匹配（多个包用;间隔）
+      druid-stat-pointcut-patterns: com.kamingpan.infrastructure.*.service.*;com.kamingpan.infrastructure.*.mapper.*;

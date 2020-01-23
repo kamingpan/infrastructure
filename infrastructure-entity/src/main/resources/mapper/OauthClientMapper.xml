@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.OauthClientDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.OauthClient">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="name" property="name" />
+        <result column="client_id" property="clientId" />
+        <result column="client_secret" property="clientSecret" />
+        <result column="client_uri" property="clientUri" />
+        <result column="redirect_uri" property="redirectUri" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="OauthClient" type="com.kamingpan.infrastructure.entity.model.vo.OauthClientVO">
+        <result column="id" property="id" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="name" property="name" />
+        <result column="client_id" property="clientId" />
+        <result column="client_secret" property="clientSecret" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        name, client_id, client_secret, client_uri, redirect_uri, remark
+    </sql>
+
+    <!-- 根据授权客户端查询授权客户端信息 -->
+    <select id="listByOauthClient" resultMap="OauthClient">
+        select
+            oc.id,
+            oc. name,
+            oc.client_id,
+            oc.client_secret,
+            oc.updater,
+            oc.update_time
+        from
+            system_oauth_client oc
+        where
+            oc.deleted = #{deleted}
+            <if test="oauthClient != null">
+                <if test="oauthClient.name != null and oauthClient.name != ''">
+                    and oc.name like #{oauthClient.name}
+                </if>
+                <if test="oauthClient.clientId != null and oauthClient.clientId != ''">
+                    and oc.client_id like #{oauthClient.clientId}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据主键查询授权客户端详情 -->
+    <select id="getOauthClientById" resultMap="OauthClient">
+        select
+            oc.id,
+            oc. name,
+            oc.client_id,
+            oc.client_secret,
+            oc.updater,
+            oc.update_time
+        from
+            system_oauth_client oc
+        where
+            oc.id = #{id}
+            and oc.deleted = #{deleted}
+    </select>
+
+</mapper>

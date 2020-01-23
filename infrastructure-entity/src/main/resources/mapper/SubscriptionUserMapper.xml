@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.SubscriptionUserDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.SubscriptionUser">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="user_id" property="userId" />
+        <result column="nickname" property="nickname" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="portrait" property="portrait" />
+        <result column="gender" property="gender" />
+        <result column="country" property="country" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="language" property="language" />
+        <result column="openid" property="openid" />
+        <result column="union_id" property="unionId" />
+        <result column="subscribed" property="subscribed" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="SubscriptionUser" type="com.kamingpan.infrastructure.entity.model.vo.SubscriptionUserVO">
+        <result column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="registered_user_id" property="registeredUserId" />
+        <result column="status" property="status" />
+        <result column="status_label" property="statusLabel" />
+        <result column="nickname" property="nickname" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="portrait" property="portrait" />
+        <result column="gender" property="gender" />
+        <result column="gender_label" property="genderLabel" />
+        <result column="country" property="country" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="openid" property="openid" />
+        <result column="union_id" property="unionId" />
+        <result column="subscribed" property="subscribed" />
+        <result column="subscribed_label" property="subscribedLabel" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        user_id, nickname, email, mobile, portrait, gender, country, province, city, language, openid, union_id, subscribed
+    </sql>
+
+    <!-- 根据主键解除手机号码绑定 -->
+    <update id="unbindByMobile">
+        update system_subscription_user set mobile = null where id = #{id}
+    </update>
+
+    <!-- 根据openid更新公众号关注状态 -->
+    <update id="updateSubscribedByOpenid">
+        update system_subscription_user
+        set subscribed = #{subscribed},
+        update_time = #{updateTime}
+        where openid = #{openid}
+    </update>
+
+    <!-- 根据公众号用户查询公众号用户信息 -->
+    <select id="listBySubscriptionUser" resultMap="SubscriptionUser">
+        select
+            su.id,
+            su.user_id,
+            u.status,
+            su.nickname,
+            su.portrait,
+            su.gender,
+            su.openid,
+            su.subscribed
+        from
+            system_subscription_user su
+            left join system_user u on u.id = su.user_id
+        where
+            su.deleted = #{deleted}
+            <if test="subscriptionUser != null">
+                <if test="subscriptionUser.nickname != null and subscriptionUser.nickname != ''">
+                    and su.nickname like #{subscriptionUser.nickname}
+                </if>
+                <if test="subscriptionUser.status != null">
+                    and u.status = #{subscriptionUser.status}
+                </if>
+                <if test="subscriptionUser.openid != null and subscriptionUser.openid != ''">
+                    and su.openid like #{subscriptionUser.openid}
+                </if>
+                <if test="subscriptionUser.subscribed != null">
+                    and su.subscribed = #{subscriptionUser.subscribed}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据手机号查询公众号用户 -->
+    <select id="getByMobile" resultMap="BaseResultMap">
+        select
+            <include refid="BaseColumnList"></include>
+        from
+            system_subscription_user
+        where
+            mobile = #{mobile}
+            and deleted = #{deleted}
+            limit 1
+    </select>
+
+    <!-- 根据主键查询公众号用户详情 -->
+    <select id="getSubscriptionUserById" resultMap="SubscriptionUser">
+        select
+            su.id,
+            su.user_id,
+            ru.id registered_user_id,
+            u.status,
+            su.nickname,
+            su.email,
+            su.mobile,
+            su.portrait,
+            su.gender,
+            su.country,
+            su.province,
+            su.city,
+            su.openid,
+            su.union_id,
+            su.subscribed
+        from
+            system_subscription_user su
+            left join system_user u on u.id = su.user_id
+            left join system_registered_user ru on ru.user_id = su.user_id
+        where
+            su.id = #{id}
+            and su.deleted = #{deleted}
+    </select>
+
+    <!-- 根据openid查询用户主键 -->
+    <select id="getUserIdByOpenid" resultType="java.lang.String">
+        <if test="openid != null and openid != ''">
+            select user_id from system_subscription_user where openid = #{openid}
+        </if>
+    </select>
+
+    <!-- 根据用户主键查询openid -->
+    <select id="getOpenidByUserId" resultType="java.lang.String">
+        <if test="userId != null and userId != ''">
+            select openid from system_subscription_user where user_id = #{userId}
+        </if>
+    </select>
+
+</mapper>

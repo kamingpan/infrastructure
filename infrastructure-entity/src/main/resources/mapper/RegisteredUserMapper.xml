@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.RegisteredUserDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.RegisteredUser">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="user_id" property="userId" />
+        <result column="mobile" property="mobile" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="RegisteredUser" type="com.kamingpan.infrastructure.entity.model.vo.RegisteredUserVO">
+        <result column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="subscription_user_id" property="subscriptionUserId" />
+        <result column="mini_program_user_id" property="miniProgramUserId" />
+        <result column="username" property="username" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        user_id, mobile, username, password
+    </sql>
+
+    <!-- 根据注册用户查询注册用户信息 -->
+    <select id="listByRegisteredUser" resultMap="RegisteredUser">
+        select
+            ru.id,
+            ru.user_id,
+            ru.username,
+            u.status,
+            ru.create_time,
+            ru.update_time
+        from
+            system_registered_user ru
+            left join system_user u on u.id = ru.user_id
+        where
+            ru.deleted = #{deleted}
+            <if test="registeredUser != null">
+                <if test="registeredUser.username != null and registeredUser.username != ''">
+                    and ru.username like #{registeredUser.username}
+                </if>
+                <if test="registeredUser.status != null">
+                    and u.status = #{registeredUser.status}
+                </if>
+            </if>
+    </select>
+
+    <!-- 根据主键查询注册用户详情 -->
+    <select id="getRegisteredUserById" resultMap="RegisteredUser">
+        select
+            ru.id,
+            ru.user_id,
+            su.id subscription_user_id,
+            mpu.id mini_program_user_id,
+            ru.username,
+            u.status,
+            ru.create_time,
+            ru.update_time
+        from
+            system_registered_user ru
+            left join system_user u on u.id = ru.user_id
+            left join system_subscription_user su on su.user_id = ru.user_id
+            left join system_mini_program_user mpu on mpu.user_id = ru.user_id
+        where
+            ru.id = #{id}
+            and ru.deleted = #{deleted}
+    </select>
+
+    <!-- 根据手机号查询小程序用户 -->
+    <select id="getByMobile" resultMap="BaseResultMap">
+        select
+            <include refid="BaseColumnList"></include>
+        from
+            system_registered_user
+        where
+            mobile = #{mobile}
+            and deleted = #{deleted}
+            limit 1
+    </select>
+
+
+</mapper>

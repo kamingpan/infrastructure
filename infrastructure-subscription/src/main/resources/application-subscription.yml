@@ -1,0 +1,18 @@
+# 公众号配置
+subscription:
+  # 公众号appID(应用ID)
+  app-id: APP_ID
+  # 公众号appSecret(应用密钥)
+  app-secret: SECRET
+  # 公众号开发者模式配置token(令牌)
+  token: TOKEN
+  # 公众号开发者模式配置aesKey(消息加解密密钥)
+  aes-key: AES_KEY
+
+  # 缓存类型（用于缓存微信access_token等，目前支持local和redis两种，local只支持单机部署）
+  cache-type: redis
+
+  # 是否初始化菜单按钮(若初始化会自动将公众号转为开发者模式)
+  init-menu: false
+  # 公众号菜单按钮类
+  menu-button-class: com.kamingpan.infrastructure.subscription.wechat.menu.WeChatMenuButton

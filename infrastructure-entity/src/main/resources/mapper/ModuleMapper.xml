@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.ModuleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.Module">
+        <result column="id" property="id"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="updater" property="updater"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted" property="deleted"/>
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="type" property="type"/>
+        <result column="route" property="route"/>
+        <result column="sort" property="sort"/>
+        <result column="superior" property="superior"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="Module" type="com.kamingpan.infrastructure.entity.model.vo.ModuleVO">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="type" property="type"/>
+        <result column="type_label" property="typeLabel"/>
+        <result column="route" property="route"/>
+        <result column="sort" property="sort"/>
+        <result column="superior" property="superior"/>
+        <result column="superior_name" property="superiorName"/>
+        <result column="superior_icon" property="superiorIcon"/>
+        <result column="status" property="status"/>
+        <result column="status_label" property="statusLabel"/>
+        <result column="remark" property="remark"/>
+        <result column="updater" property="updater"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- vo映射结果 -->
+    <resultMap id="ModuleList" type="com.kamingpan.infrastructure.entity.model.vo.ModuleListVO">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="type" property="type"/>
+        <result column="route" property="route"/>
+        <result column="sort" property="sort"/>
+        <result column="superior" property="superior"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        name, icon, type, route, sort, superior, status, remark
+    </sql>
+
+    <!-- 根据管理员查询模块 -->
+    <select id="listByAdminId" resultMap="BaseResultMap">
+        <if test="adminId != null">
+            select
+                <include refid="BaseColumnList"/>
+            from
+                system_module
+            where
+                id in (
+                    select module_id from system_permission where id in (
+                        select permission_id from system_role_permission where role_id in (
+                            select role_id from system_admin_role where admin_id = #{adminId}
+                        )
+                    )
+                )
+                and status = #{status}
+            order by
+                sort
+        </if>
+    </select>
+
+    <!-- 根据主键集合查询侧边栏模块列表 -->
+    <select id="listSideBarModuleByIds" resultMap="ModuleList">
+        select
+            id,
+            name,
+            icon,
+            type,
+            route,
+            sort,
+            superior
+        from
+            system_module
+        where
+            status = #{status}
+            and deleted = #{deleted}
+            <if test="null != ids">
+                and id in <foreach item="item" index="index" collection="ids" open="(" close=")" separator=",">#{item}</foreach>
+            </if>
+        order by
+            superior, sort
+    </select>
+
+    <!-- 查询模块信息 -->
+    <select id="listModule" resultMap="ModuleList">
+        select
+            id,
+            name,
+            icon,
+            superior
+        from
+            system_module
+        where
+            deleted = #{deleted}
+        order by
+            superior, sort
+    </select>
+
+    <!-- 查询所有上级模块（排除当前模块） -->
+    <select id="listSuperior" resultMap="Module">
+        select
+            id,
+            name
+            from
+            system_module
+        where
+            status = 0
+            and deleted = 0
+            <if test="id != null">
+                and id != #{id}
+            </if>
+    </select>
+
+    <!-- 根据主键查询模块信息 -->
+    <select id="getModuleById" resultMap="Module">
+        select
+            m.id,
+            m.name,
+            m.icon,
+            m.type,
+            m.route,
+            m.sort,
+            m.superior,
+            s.name superior_name,
+            s.icon superior_icon,
+            m.status,
+            m.remark,
+            m.update_time,
+            m.updater
+        from
+            system_module m
+            left join system_module s on s.id = m.superior
+        where
+            m.id = #{id}
+            and m.deleted = #{deleted}
+    </select>
+
+    <!-- 根据状态查询模块 -->
+    <select id="listMapByStatus" resultType="java.util.Map">
+        select
+            id,
+            name,
+            icon,
+            superior
+        from
+            system_module
+        where
+            status = #{status}
+        order by
+            superior,
+            sort
+    </select>
+
+</mapper>

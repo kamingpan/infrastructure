@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kamingpan.infrastructure.entity.dao.RolePermissionDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kamingpan.infrastructure.entity.model.entity.RolePermission">
+        <result column="id" property="id" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater_id" property="updaterId" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="role_id" property="roleId" />
+        <result column="permission_id" property="permissionId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumnList">
+        id,
+        creator_id,
+        creator,
+        create_time,
+        updater_id,
+        updater,
+        update_time,
+        deleted,
+        role_id, permission_id
+    </sql>
+
+    <!-- 根据角色删除关联关系 -->
+    <delete id="deleteByRoleId" parameterType="java.lang.String">
+        <if test="roleId != null and roleId != ''">
+            delete from system_role_permission where role_id = #{roleId}
+        </if>
+    </delete>
+
+    <!-- 根据权限主键查询角色-权限关联数量 -->
+    <select id="countByPermissionId" resultType="java.lang.Integer">
+        select count(id) from system_role_permission where permission_id = #{permissionId}
+    </select>
+
+</mapper>

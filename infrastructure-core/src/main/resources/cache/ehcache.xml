@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" name="defaultCache">
+
+    <!--
+        diskStore：为缓存路径，ehcache分为内存和磁盘两级，此属性定义磁盘的缓存位置。参数解释如下：
+        user.home – 用户主目录
+        user.dir  – 用户当前工作目录
+        java.io.tmpdir – 默认临时文件路径
+     -->
+    <!--<diskStore path="${diskStorePath}"/>-->
+    <diskStore path="java.io.tmpdir"/>
+
+    <!-- 默认缓存配置. 自动失效：最后一次访问时间间隔300秒失效，若没有访问过自创建时间600秒失效。-->
+    <defaultCache maxEntriesLocalHeap="1000" eternal="false" timeToIdleSeconds="300"
+                  timeToLiveSeconds="600" overflowToDisk="true" statistics="true"/>
+
+    <!-- 系统缓存 -->
+    <cache name="sysCache" maxEntriesLocalHeap="1000" eternal="true"
+           overflowToDisk="true" statistics="true"/>
+
+    <!-- 登录记录缓存，记录登录失败后不允许再登录的缓存 -->
+    <cache name="passwordRetryCache" timeToIdleSeconds="0" timeToLiveSeconds="86400"
+           maxEntriesLocalHeap="100" eternal="false" overflowToDisk="false"
+           diskPersistent="true" statistics="true"/>
+
+    <!-- 移除登录缓存 -->
+    <cache name="removeLoginCache" timeToIdleSeconds="0" timeToLiveSeconds="86400"
+           maxEntriesLocalHeap="100" eternal="false" overflowToDisk="false"
+           diskPersistent="true" statistics="true"/>
+
+    <!-- shiro缓存 -->
+    <cache name="shiroActiveSessionCache" maxEntriesLocalHeap="10000" eternal="true"
+           overflowToDisk="true" diskPersistent="true" diskExpiryThreadIntervalSeconds="600"
+           statistics="true"/>
+
+</ehcache>
