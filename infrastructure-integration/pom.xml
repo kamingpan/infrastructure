@@ -40,7 +40,7 @@
 
         <javamelody.version>1.81.0</javamelody.version>
         <jstl.version>1.2</jstl.version>
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
         <jxls.version>2.4.6</jxls.version>
         <jxls-poi.version>1.0.15</jxls-poi.version>
         <jxls-jexcel.version>1.0.7</jxls-jexcel.version>
