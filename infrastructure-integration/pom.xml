@@ -48,7 +48,7 @@
         <mybatis.version>1.2.13</mybatis.version>
         <mybatis-plus.version>3.3.1</mybatis-plus.version>
         <mybatis.generator.version>1.4.0</mybatis.generator.version>
-        <mysql.version>8.0.19</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
 
         <oauth2.version>1.0.2</oauth2.version>
 
