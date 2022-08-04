@@ -52,7 +52,7 @@
 
         <oauth2.version>1.0.2</oauth2.version>
 
-        <pac4j.version>3.8.3</pac4j.version>
+        <pac4j.version>4.5.5</pac4j.version>
         <pac4j-buji.version>4.1.1</pac4j-buji.version>
 
         <quartz.version>2.3.2</quartz.version>
